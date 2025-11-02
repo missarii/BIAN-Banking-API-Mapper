@@ -1,0 +1,17 @@
+node_modules/
+dist/
+build/
+coverage/
+.env
+!.env.example
+*.tsbuildinfo
+*.local
+**/prisma/migrations/
+.DS_Store
+.vite/
+.idea/
+.vscode/*
+!.vscode/extensions.json
+pnpm-lock.yaml
+tmp/
+*.tgz
