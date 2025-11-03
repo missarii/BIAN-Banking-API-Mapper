@@ -1,0 +1,24 @@
+{
+  "name": "bian-banking-api-mapper",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A BIAN-aligned proof-of-concept tool for mapping enterprise banking APIs to BIAN Service Domains (independent POC, not an official BIAN implementation).",
+  "license": "MIT",
+  "packageManager": "pnpm",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "seed:build": "python3 scripts/build_seed.py",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down",
+    "prisma:generate": "pnpm --filter @bian/api prisma:generate",
+    "prisma:migrate": "pnpm --filter @bian/api prisma:migrate",
+    "prisma:seed": "pnpm --filter @bian/mapping-engine build && pnpm --filter @bian/api prisma:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
