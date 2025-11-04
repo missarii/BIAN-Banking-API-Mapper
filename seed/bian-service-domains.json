@@ -1,0 +1,220 @@
+{
+  "version": "14.0.0",
+  "source": "bian-official/public release14.0.0 semantic-apis/oas3 yamls (Apache-2.0). Each YAML is one BIAN Service Domain; names, purposes and operations quoted from info.title/info.description and operationId/summary.",
+  "generated": "2026-10-02",
+  "note": "Display names, purposes and operations are BIAN 14.0.0. Business-area grouping + dependency edges are curated for this demo and are NOT official BIAN relations.",
+  "count": 40,
+  "domains": [
+    {
+      "slug": "partyreferencedatadirectory",
+      "file": "PartyReferenceDataDirectory",
+      "name": "Party Reference Data Directory",
+      "description": "This service domain maintains a range of party reference information covering aspects including general reference details, contacts and associations and demographic information",
+      "businessArea": "Customer",
+      "keywords": [
+        "accept",
+        "action",
+        "aspects",
+        "association",
+        "associations",
+        "associationsid",
+        "automated",
+        "bank",
+        "bankrelationsid",
+        "capture",
+        "catalog",
+        "contacts",
+        "content",
+        "control",
+        "covering",
+        "customer",
+        "data",
+        "demographic",
+        "demographics",
+        "demographicsid",
+        "details",
+        "directory",
+        "domain",
+        "entity",
+        "entries",
+        "entry",
+        "etc",
+        "exchange",
+        "execute",
+        "general",
+        "handling",
+        "information",
+        "intervention",
+        "maintains",
+        "manual",
+        "party",
+        "partyreferencedatadirectoryid",
+        "range",
+        "record",
+        "reference",
+        "referenceid",
+        "refresh",
+        "register",
+        "reject",
+        "relations",
+        "request",
+        "retrieve",
+        "service"
+      ],
+      "controlRecord": "PartyReferenceDataDirectoryEntry",
+      "behaviorQualifiers": [
+        "Demographics",
+        "Reference",
+        "Associations",
+        "BankRelations"
+      ],
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/PartyReferenceDataDirectory/Register",
+          "operationId": "Register",
+          "summary": "InCR Register a customer entity in the catalog",
+          "tags": [
+            "CR - PartyReferenceDataDirectoryEntry"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Control",
+          "operationId": "Control",
+          "summary": "CoCR Control the handling of a customer entry (e.g. terminate)",
+          "tags": [
+            "CR - PartyReferenceDataDirectoryEntry"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Update",
+          "operationId": "Update",
+          "summary": "UpCR Update details about the customer's directory entry",
+          "tags": [
+            "CR - PartyReferenceDataDirectoryEntry"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Retrieve",
+          "operationId": "Retrieve",
+          "summary": "ReCR Retrieve details about a customer directory entry",
+          "tags": [
+            "CR - PartyReferenceDataDirectoryEntry"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Request",
+          "operationId": "Request",
+          "summary": "RqCR Request manual intervention with an entry (e.g. refresh content)",
+          "tags": [
+            "CR - PartyReferenceDataDirectoryEntry"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Execute",
+          "operationId": "Execute",
+          "summary": "ExCR Execute an automated action against an entry",
+          "tags": [
+            "CR - PartyReferenceDataDirectoryEntry"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Exchange",
+          "operationId": "Exchange",
+          "summary": "EcCR Accept, verify, reject a directory entry",
+          "tags": [
+            "CR - PartyReferenceDataDirectoryEntry"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Demographics/{demographicsid}/Exchange",
+          "operationId": "ExchangeDemographics",
+          "summary": "EcBQ Accept, verify, reject etc. details of a customer directory entry",
+          "tags": [
+            "BQ - Demographics"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Reference/{referenceid}/Update",
+          "operationId": "UpdateReference",
+          "summary": "UpBQ Update details about a reference entry for the customer",
+          "tags": [
+            "BQ - Reference"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Reference/{referenceid}/Retrieve",
+          "operationId": "RetrieveReference",
+          "summary": "ReBQ Retrieve details about reference entries in the directory",
+          "tags": [
+            "BQ - Reference"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Associations/{associationsid}/Retrieve",
+          "operationId": "RetrieveAssociations",
+          "summary": "ReBQ Retrieve details about association entries in the directory record",
+          "tags": [
+            "BQ - Associations"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Associations/{associationsid}/Update",
+          "operationId": "UpdateAssociations",
+          "summary": "UpBQ Update details about an association entry for the customer",
+          "tags": [
+            "BQ - Associations"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Demographics/{demographicsid}/Update",
+          "operationId": "UpdateDemographics",
+          "summary": "UpBQ Update details about a customer's demographic entry",
+          "tags": [
+            "BQ - Demographics"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Demographics/{demographicsid}/Retrieve",
+          "operationId": "RetrieveDemographics",
+          "summary": "ReBQ Retrieve details about customer demographics entries in the directory",
+          "tags": [
+            "BQ - Demographics"
+          ]
+        },
+        {
+          "method": "PUT",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/BankRelations/{bankrelationsid}/Update",
+          "operationId": "UpdateBankRelations",
+          "summary": "UpBQ Update details about a customer's bank relations entry for the customer",
+          "tags": [
+            "BQ - BankRelations"
+          ]
+        },
+        {
+          "method": "GET",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/BankRelations/{bankrelationsid}/Retrieve",
+          "operationId": "RetrieveBankRelations",
+          "summary": "ReBQ Retrieve details about customer bank relations entries in the directory",
+          "tags": [
+            "BQ - BankRelations"
+          ]
+        },
+        {
+          "method": "POST",
+          "path": "/PartyReferenceDataDirectory/{partyreferencedatadirectoryid}/Associations/Register",
+          "operationId": "RegisterAssociations",
+          "summary": "Capture Association Details",
