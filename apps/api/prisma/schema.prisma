@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ARCHITECT
+  VIEWER
+}
+
+enum MappingStatus {
+  CANDIDATE // engine suggestion, awaiting human review
+  ACCEPTED // architect accepted
+  REJECTED // architect rejected
+}
+
+enum ReviewDecision {
+  ACCEPT
+  REJECT
+  CHANGE
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(ARCHITECT)
+  createdAt DateTime @default(now())
+  reviews   MappingReview[]
+}
+
+model ServiceDomain {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  name               String
+  description        String   @db.Text
+  businessArea       String
+  keywords           String[]
+  controlRecord      String?
+  behaviorQualifiers String[]
+  bianOperations     Json?
+  bianVersion        String   @default("14.0.0")
+  sourceUrl          String?
+  outgoing           Dependency[] @relation("SourceDomain")
+  incoming           Dependency[] @relation("TargetDomain")
+  mappings           Mapping[]
+
+  @@index([businessArea])
+}
