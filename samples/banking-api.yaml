@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: Retail Banking Channel API
+  description: >
+    Sample enterprise API surface used to demo the BIAN Banking API Mapper.
+    Written the way a real bank team would write it: business summaries, no
+    BIAN vocabulary anywhere. The mapper is expected to find the alignment.
+  version: 3.4.0
+servers:
+  - url: https://api.example-bank.test/v3
+paths:
+  /customers:
+    post:
+      operationId: createCustomer
+      summary: Register a new retail customer
+      description: Creates a customer record with contact details and demographics.
+      responses:
+        '201':
+          description: Customer created
+  /customers/{customerId}:
+    get:
+      operationId: getCustomer
+      summary: Retrieve customer details
+      responses:
+        '200':
+          description: Customer record
+    put:
+      operationId: updateCustomer
+      summary: Update customer contact details
+      responses:
+        '200':
+          description: Updated
+  /accounts:
+    post:
+      operationId: openAccount
+      summary: Open a new checking account for a customer
+      description: Opens a current account and issues an account number.
+      responses:
+        '201':
+          description: Account opened
+  /accounts/{accountId}/balance:
+    get:
+      operationId: getBalance
+      summary: Retrieve the balance and position of an account
+      responses:
+        '200':
+          description: Balance
+  /payments:
+    post:
+      operationId: initiatePayment
