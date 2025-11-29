@@ -1,0 +1,22 @@
+# BIAN Banking API Mapper — local infrastructure
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bian-mapper-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bian
+      POSTGRES_PASSWORD: bian
+      POSTGRES_DB: bian_mapper
+    ports:
+      - "5433:5432"
+    volumes:
+      - bian_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bian -d bian_mapper"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  bian_pgdata:
