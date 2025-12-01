@@ -58,3 +58,73 @@ function domainCorpus(d: ServiceDomainProfile) {
 }
 
 /** Smoothed IDF weights in (0,1] over the domain catalog corpora. */
+function idfWeights(domains: ServiceDomainProfile[]): { idf: Map<string, number>; vocab: Set<string> } {
+  const df = new Map<string, number>();
+  const vocab = new Set<string>();
+  for (const d of domains) {
+    const c = domainCorpus(d);
+    const terms = new Set([...c.name, ...c.desc, ...c.keywords, ...c.paths]);
+    for (const t of terms) {
+      vocab.add(t);
+      df.set(t, (df.get(t) ?? 0) + 1);
+    }
+  }
+  const n = Math.max(1, domains.length);
+  const idf = new Map<string, number>();
+  for (const [t, f] of df) {
+    idf.set(t, Math.log(1 + n / f) / Math.log(1 + n));
+  }
+  return { idf, vocab };
+}
+
+function weightedRecall(needles: Set<string>, haystack: Set<string>, idf: Map<string, number>, vocab?: Set<string>): { score: number; hits: string[] } {
+  let num = 0;
+  let den = 0;
+  const hits: string[] = [];
+  for (const t of needles) {
+    if (vocab && !vocab.has(t)) continue;
+    const w = idf.get(t) ?? 1;
+    den += w;
+    if (haystack.has(t)) { num += w; hits.push(t); }
+  }
+  hits.sort((a, b) => (idf.get(b) ?? 0) - (idf.get(a) ?? 0));
+  return { score: den === 0 ? 0 : num / den, hits };
+}
+
+export function confidenceFor(score: number): Confidence {
+  if (score >= 70) return 'HIGH';
+  if (score >= 40) return 'MEDIUM';
+  return 'LOW';
+}
+
+export function scoreApi(api: ApiInput, domains: ServiceDomainProfile[], options: ScoreOptions = {}): Recommendation[] {
+  const { topN = 5, minScore = 0 } = options;
+  const a = apiCorpus(api);
+  const { idf, vocab } = idfWeights(domains);
+  const out: Recommendation[] = [];
+  for (const d of domains) {
+    const c = domainCorpus(d);
+    const domainText = new Set([...c.name, ...c.desc, ...c.keywords, ...c.paths]);
+    const nameR = weightedRecall(c.name, a.all, idf, vocab);
+    const descR = weightedRecall(a.desc, domainText, idf, vocab);
+    const kwR = weightedRecall(a.all, c.keywords, idf, vocab);
+    const pathR = weightedRecall(a.paths, c.paths, idf, vocab);
+    const verbR = weightedRecall(a.verbs, c.verbs, idf, vocab);
+    const raw =
+      nameR.score * WEIGHTS.name +
+      descR.score * WEIGHTS.description +
+      Math.min(kwR.score * 1.5, 1) * WEIGHTS.keywords +
+      pathR.score * WEIGHTS.paths +
+      Math.min(verbR.score, 1) * WEIGHTS.verbs;
+    const score = Math.round(Math.min(100, Math.max(0, raw)));
+    if (score < minScore) continue;
+    const reasons: string[] = [];
+    if (nameR.hits.length > 0) reasons.push(`name overlap: ${nameR.hits.slice(0, 4).join(', ')}`);
+    if (kwR.hits.length > 0) reasons.push(`keyword hits (${kwR.hits.length}): ${kwR.hits.slice(0, 6).join(', ')}`);
+    if (verbR.hits.length > 0) reasons.push(`operation verbs: ${verbR.hits.slice(0, 4).join(', ')}`);
+    if (descR.score > 0 && kwR.hits.length === 0) reasons.push('description terms overlap');
+    out.push({ domainId: d.id, domainName: d.name, businessArea: d.businessArea, score, confidence: confidenceFor(score), reasons, matchedKeywords: kwR.hits.slice(0, 12) });
+  }
+  out.sort((x, y) => y.score - x.score || x.domainName.localeCompare(y.domainName));
+  return out.slice(0, Math.max(1, topN));
+}
