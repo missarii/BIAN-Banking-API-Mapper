@@ -43,3 +43,56 @@ const cases: { api: ApiInput; expectTop: string }[] = [
       ],
     },
     expectTop: 'Party Reference Data Directory',
+  },
+  {
+    api: {
+      id: 'account-api',
+      name: 'Account API',
+      description: 'Open and service consumer checking accounts and balances.',
+      operations: [
+        { method: 'POST', path: '/accounts', summary: 'Initiate a new checking account' },
+        { method: 'GET', path: '/accounts/{id}/balance', summary: 'Retrieve account balance' },
+      ],
+    },
+    expectTop: 'Current Account',
+  },
+  {
+    api: {
+      id: 'card-api',
+      name: 'Card API',
+      description: 'Authorize and capture card transactions, block lost cards.',
+      operations: [
+        { method: 'POST', path: '/cards/{id}/authorize', summary: 'Authorize a card transaction' },
+        { method: 'POST', path: '/cards/{id}/block', summary: 'Block a lost card' },
+      ],
+    },
+    expectTop: 'Card',
+  },
+  {
+    api: {
+      id: 'loan-api',
+      name: 'Loan Origination API',
+      description: 'Apply for and approve consumer mortgage loans.',
+      operations: [
+        { method: 'POST', path: '/loans/applications', summary: 'Apply for a mortgage loan' },
+        { method: 'POST', path: '/loans/{id}/approve', summary: 'Approve a loan application' },
+      ],
+    },
+    expectTop: 'Loan',
+  },
+];
+
+describe('real BIAN 14.0 seed sanity', () => {
+  const domains = loadRealDomains();
+  for (const { api, expectTop } of cases) {
+    it(`${api.name} ranks a ${expectTop} domain first`, () => {
+      const recs = scoreApi(api, domains, { topN: 5 });
+      console.log(
+        `${api.name}: ` +
+          recs.slice(0, 3).map((r) => `${r.domainName} ${r.score}`).join(' | '),
+      );
+      expect(recs[0].domainName).toContain(expectTop);
+      expect(recs[0].score).toBeGreaterThanOrEqual(40);
+    });
+  }
+});
