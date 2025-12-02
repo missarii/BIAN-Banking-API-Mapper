@@ -53,3 +53,68 @@ model ServiceDomain {
 
   @@index([businessArea])
 }
+
+model Api {
+  id              String         @id @default(cuid())
+  name            String
+  description     String?        @db.Text
+  baseUrl         String?
+  version         String?
+  protocol        String         @default("REST")
+  owner           String?
+  openApiDocument Json?
+  createdAt       DateTime       @default(now())
+  operations      ApiOperation[]
+  mappings        Mapping[]
+}
+
+model ApiOperation {
+  id          String  @id @default(cuid())
+  api         Api     @relation(fields: [apiId], references: [id], onDelete: Cascade)
+  apiId       String
+  method      String
+  path        String
+  summary     String?
+  description String? @db.Text
+
+  @@index([apiId])
+}
+
+model Mapping {
+  id              String        @id @default(cuid())
+  api             Api           @relation(fields: [apiId], references: [id], onDelete: Cascade)
+  apiId           String
+  serviceDomain   ServiceDomain @relation(fields: [serviceDomainId], references: [id], onDelete: Cascade)
+  serviceDomainId String
+  score           Int
+  confidence      String
+  status          MappingStatus @default(CANDIDATE)
+  createdAt       DateTime      @default(now())
+  reviews         MappingReview[]
+
+  @@unique([apiId, serviceDomainId])
+  @@index([apiId])
+  @@index([serviceDomainId])
+}
+
+model Dependency {
+  id       String        @id @default(cuid())
+  source   ServiceDomain @relation("SourceDomain", fields: [sourceId], references: [id], onDelete: Cascade)
+  sourceId String
+  target   ServiceDomain @relation("TargetDomain", fields: [targetId], references: [id], onDelete: Cascade)
+  targetId String
+  kind     String        @default("depends-on")
+
+  @@unique([sourceId, targetId])
+}
+
+model MappingReview {
+  id        String         @id @default(cuid())
+  mapping   Mapping        @relation(fields: [mappingId], references: [id], onDelete: Cascade)
+  mappingId String
+  reviewer  User           @relation(fields: [reviewerId], references: [id])
+  reviewerId String
+  decision  ReviewDecision
+  comment   String?
+  createdAt DateTime       @default(now())
+}
