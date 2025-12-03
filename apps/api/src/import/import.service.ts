@@ -36,3 +36,43 @@ export class ImportService {
         version: doc.info?.version,
         protocol: 'REST',
         owner: 'OpenAPI import',
+        openApiDocument: doc as any,
+        operations: {
+          create: endpoints.map((e) => ({
+            method: e.method,
+            path: e.path,
+            summary: e.summary,
+            description: e.description,
+          })),
+        },
+      },
+      include: { _count: { select: { operations: true } } },
+    });
+
+    return {
+      apiId: api.id,
+      apiName: api.name,
+      imported: endpoints.length,
+    };
+  }
+
+  private extractEndpoints(doc: OpenApiDoc) {
+    const out: { method: string; path: string; summary?: string; description?: string }[] = [];
+    for (const [path, item] of Object.entries(doc.paths ?? {})) {
+      if (!item || typeof item !== 'object') continue;
+      for (const [method, op] of Object.entries(item)) {
+        if (!['get', 'post', 'put', 'patch', 'delete', 'options', 'head'].includes(method)) {
+          continue;
+        }
+        const o = (op ?? {}) as Record<string, any>;
+        out.push({
+          method: method.toUpperCase(),
+          path,
+          summary: o.summary ?? o.operationId,
+          description: o.description,
+        });
+      }
+    }
+    return out;
+  }
+}
