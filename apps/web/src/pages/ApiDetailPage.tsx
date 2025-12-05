@@ -50,3 +50,63 @@ export function ApiDetailPage() {
                 {(a.operations ?? []).map((o: any) => (
                   <li key={o.id} className="rounded bg-slate-50 px-2 py-1">
                     <span className="font-mono font-semibold">{o.method}</span>{' '}
+                    <span className="font-mono">{o.path}</span>
+                    {o.summary && <span className="text-slate-500"> — {o.summary}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-xl border bg-white p-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-semibold">BIAN mappings</h2>
+                <button
+                  className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
+                  disabled={analyze.isPending}
+                  onClick={() => analyze.mutate()}
+                >
+                  {analyze.isPending ? 'Analyzing…' : 'Analyze mapping'}
+                </button>
+              </div>
+              {msg && <p className="mt-2 text-xs text-slate-500">{msg}</p>}
+              <ul className="mt-3 space-y-2">
+                {(a.mappings ?? []).map((m: any) => (
+                  <li key={m.id} className="rounded-lg border px-3 py-2 text-sm">
+                    <div className="flex items-center justify-between gap-2">
+                      <Link className="font-medium text-blue-700 hover:underline" to={`/service-domains/${m.serviceDomain.slug}`}>
+                        {m.serviceDomain.name}
+                      </Link>
+                      <span className={`rounded px-2 py-0.5 text-xs ${confidenceColor(m.confidence)}`}>
+                        {m.score}% · {m.confidence}
+                      </span>
+                    </div>
+                    <div className="mt-1 text-xs text-slate-500">
+                      Status: <span className="font-medium">{m.status}</span>
+                    </div>
+                    <div className="mt-2 flex gap-2">
+                      <button
+                        className="rounded border px-2 py-1 text-xs"
+                        onClick={() => review.mutate({ serviceDomainId: m.serviceDomainId, decision: 'ACCEPT' })}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className="rounded border px-2 py-1 text-xs"
+                        onClick={() => review.mutate({ serviceDomainId: m.serviceDomainId, decision: 'REJECT' })}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </li>
+                ))}
+                {(a.mappings ?? []).length === 0 && (
+                  <li className="text-xs text-slate-400">No candidates yet — run Analyze mapping.</li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </>
+      )}
+    </Layout>
+  );
+}
