@@ -43,3 +43,53 @@ export function DomainDetailPage() {
               <ul className="mt-2 max-h-72 space-y-1 overflow-auto text-xs">
                 {(d.bianOperations?.operations ?? []).map((o: any, i: number) => (
                   <li key={i} className="rounded bg-slate-50 px-2 py-1">
+                    <span className="font-mono font-semibold">{o.method}</span>{' '}
+                    <span className="font-mono">{o.path}</span>
+                    {o.summary && <span className="text-slate-500"> — {o.summary}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <div className="rounded-xl border bg-white p-4">
+                <h2 className="text-sm font-semibold">Dependencies (demo curation)</h2>
+                <ul className="mt-2 space-y-1 text-sm">
+                  {(d.outgoing ?? []).map((x: any) => (
+                    <li key={x.id}>
+                      <Link
+                        className="text-blue-700 hover:underline"
+                        to={`/service-domains/${x.target.slug}`}
+                      >
+                        {x.target.name}
+                      </Link>
+                    </li>
+                  ))}
+                  {(d.outgoing ?? []).length === 0 && (
+                    <li className="text-slate-400">No outgoing edges in the demo graph.</li>
+                  )}
+                </ul>
+              </div>
+              <div className="rounded-xl border bg-white p-4">
+                <h2 className="text-sm font-semibold">Mapped internal APIs</h2>
+                <ul className="mt-2 space-y-1 text-sm">
+                  {(d.mappings ?? []).map((m: any) => (
+                    <li key={m.id}>
+                      <Link className="text-blue-700 hover:underline" to={`/apis/${m.api.id}`}>
+                        {m.api.name}
+                      </Link>
+                      <span className="text-slate-400"> · {m.score}%</span>
+                    </li>
+                  ))}
+                  {(d.mappings ?? []).length === 0 && (
+                    <li className="text-slate-400">Nothing mapped here yet.</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </Layout>
+  );
+}
