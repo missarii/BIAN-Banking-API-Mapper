@@ -48,3 +48,58 @@ paths:
   /payments:
     post:
       operationId: initiatePayment
+      summary: Initiate and execute a customer payment
+      description: Creates a payment order and executes the transfer.
+      responses:
+        '202':
+          description: Payment accepted
+  /payments/{paymentId}:
+    get:
+      operationId: getPaymentStatus
+      summary: Retrieve payment order status
+      responses:
+        '200':
+          description: Payment status
+  /payments/{paymentId}/cancel:
+    post:
+      operationId: cancelPayment
+      summary: Cancel a pending payment order
+      responses:
+        '200':
+          description: Cancelled
+  /cards/{cardId}/authorize:
+    post:
+      operationId: authorizeCard
+      summary: Authorize a card transaction
+      description: Assesses and authorizes an interactive card transaction.
+      responses:
+        '200':
+          description: Authorization decision
+  /cards/{cardId}/block:
+    post:
+      operationId: blockCard
+      summary: Block a lost or stolen credit card
+      responses:
+        '200':
+          description: Card blocked
+  /loans/applications:
+    post:
+      operationId: applyForLoan
+      summary: Apply for a consumer loan
+      responses:
+        '201':
+          description: Application received
+  /mortgages/applications:
+    post:
+      operationId: applyForMortgage
+      summary: Apply for a mortgage loan secured on a property
+      responses:
+        '201':
+          description: Application received
+  /fraud/assessments:
+    post:
+      operationId: assessFraud
+      summary: Evaluate a transaction for fraud risk
+      responses:
+        '200':
+          description: Fraud assessment
