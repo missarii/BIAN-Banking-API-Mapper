@@ -40,3 +40,46 @@ export function ArchitecturePage() {
           style: {
             border: '1px solid #475569',
             borderRadius: 10,
+            padding: 8,
+            background: '#f1f5f9',
+            fontSize: 12,
+            width: 230,
+          },
+        })),
+      ],
+      edges: (g.edges ?? []).map((e: any, i: number) => ({
+        id: `e${i}`,
+        source: e.source,
+        target: e.target,
+        label: e.kind === 'maps-to' ? 'maps to' : 'depends on',
+        animated: e.kind === 'maps-to',
+        style: { stroke: e.kind === 'maps-to' ? '#0e5aa8' : '#94a3b8' },
+      })),
+    };
+  }, [data]);
+
+  return (
+    <Layout>
+      <h1 className="text-xl font-bold">Architecture Graph</h1>
+      <p className="mt-1 text-sm text-slate-500">
+        Blue/grey boxes are BIAN Service Domains, grey boxes are your APIs. Edges show accepted
+        mappings and curated domain dependencies.
+      </p>
+      <div className="mt-4 flex gap-2">
+        <input
+          className="rounded-lg border px-3 py-2 text-sm"
+          placeholder="Filter by business area (e.g. Payments)"
+          value={area}
+          onChange={(e) => setArea(e.target.value)}
+        />
+      </div>
+      <div className="mt-4 h-[560px] rounded-xl border bg-white">
+        <ReactFlow nodes={nodes} edges={edges} fitView>
+          <Background />
+          <Controls />
+          <MiniMap />
+        </ReactFlow>
+      </div>
+    </Layout>
+  );
+}
